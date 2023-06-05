@@ -11,59 +11,71 @@ const Form = () => {
         bio: "",
     })
 
-    const [errors, setErrors] = useState([])
+    const [errors, setErrors] = useState({
+        name: "",
+        email: "",
+        phoneNumber: "",
+        phoneType: "",
+        bio: "",
+    })
 
     const numbers = "0123456789"
 
     const validate = () => {
-        let errors = [];
-        // console.log(user)
-        // console.log(user.name)
-        // console.log(user.email)
-        console.log(user.phoneNumber)
+        let errorsObj = {};
+        
+        
         if(user.name.length === 0){
-            errors.push("Name can't be blank")
+            // console.log('invalid name');
+            // setErrors({...errors, name: "Name can't be blank"});
+            // console.log(errors['name']);
+            errorsObj.name = "Name can't be blank";
         }
         if(!user.email.includes("@")){
-            errors.push("Email is invalid")
+            // setErrors({...errors, email: "Email is invalid"});
+            // errors.email = "Email is invalid";
+            errorsObj.email = "Email is invalid";
         }
         if(user.phoneNumber.length === 0){
-            errors.push("No phone number provided")
+            // setErrors({...errors, phoneNumber: "No phone number provided"});
+            // errors.phoneNumber = "No phone number provided";
+            errorsObj.phoneNumber = "No phone number provided";
         }
         for (let i = 0; i < user.phoneNumber.length; i++) {
             const num = user.phoneNumber[i];
-            console.log(num)
+            
             if(!numbers.includes(num)){
-                console.log("not a number")
-                errors.push("Phone # can only include numbers")
+                // setErrors({...errors, phoneNumber: "Phone # can only include numbers"});
+                // errors.phoneNumber = "Phone # can only include numbers";
+                errorsObj.phoneNumber = "Phone # can only include numbers";
                 break
             }
         }
         if(user.bio.length > 280){
-            errors.push("Bio is too long")
+            // setErrors({...errors, bio: "Bio is too long"});
+            errorsObj.bio = "Bio is too long";
+            // errorsObj.phoneNumber = "Phone # can only include numbers";
         }
-        return errors;
+        return errorsObj;
     }
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        let errors = validate();
-
-        if (errors.length > 0) {
-            setErrors(errors);
-        }
+        let err = validate();
+        setErrors(err);
     }
 
-    const showErrors = () => {
-        if (!errors.length) {
-            return null
-        }
-        return (
-            <ul>
-                {errors.map(err => <li>{err}</li>)}
-            </ul>
-        )
-    }
+    // const showErrors = () => {
+    //     console.log(errors);
+    //     if (!errors.length) {
+    //         return null
+    //     }
+    //     return (
+    //         <ul>
+    //             {errors.map(err => <li>{err}</li>)}
+    //         </ul>
+    //     )
+    // }
 
     const handleChange = (field) => {
         return (e) => {
@@ -74,19 +86,23 @@ const Form = () => {
     return (
         <>
             <h1>Sign Up</h1>
-            {showErrors()}
+            {/* {showErrors()} */}
             <form onSubmit={handleSubmit}>
                 <label>Name:
                     <input type="text" onChange={handleChange("name")} value={user.name}/>
                 </label>
+                {errors.name.length ? (<p>{errors.name}</p>) : null}
+                {/* {errors.bio.length ? (<p>{errors.bio}</p>) : null} */}
                 <br/>
                 <label>Email:
                     <input type="text" onChange={handleChange("email")} value={user.email}/>
                 </label>
+                {errors.email.length ? (<p>{errors.email}</p>) : null}
                 <br/>
                 <label>Phone Number:
                     <input type="text" onChange={handleChange("phoneNumber")} value={user.phoneNumber}/>
                 </label>
+                {errors.phoneNumber.length ? (<p>{errors.phoneNumber}</p>) : null}
                 <br/>
                 <label>Phone Type
                     <select>
@@ -104,6 +120,7 @@ const Form = () => {
                 <br/>
                 <h3>Bio</h3>
                 <textarea name="" id="" cols="30" rows="10" onChange={handleChange("bio")} value={user.bio}></textarea>
+                
                 <p>Sign up for Email Notifications</p>
                 <input type="checkbox" />
                 <br/>
